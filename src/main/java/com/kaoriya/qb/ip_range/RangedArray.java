@@ -3,29 +3,29 @@ package com.kaoriya.qb.ip_range;
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class RangedArray
+public class RangedArray<T>
 {
-    private RangedItem[] array;
+    private RangedItem<T>[] array;
 
-    public RangedArray(RangedItem... items)
+    public RangedArray(RangedItem<T>... items)
     {
         this.array = Arrays.copyOf(items, items.length);
         sortByRange(this.array);
     }
 
-    public RangedItem find(int key)
+    public RangedItem<T> find(int key)
     {
         int index = binarySearch(this.array, 0, this.array.length - 1, key);
         return index >= 0 ? this.array[index] : null;
     }
 
-    static private void sortByRange(RangedItem[] array)
+    private void sortByRange(RangedItem<T>[] array)
     {
         Arrays.sort(array);
     }
 
-    static private int binarySearch(
-            RangedItem[] array,
+    private int binarySearch(
+            RangedItem<T>[] array,
             int start,
             int end,
             int key)
