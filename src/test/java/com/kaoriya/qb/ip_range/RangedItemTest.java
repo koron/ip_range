@@ -40,4 +40,26 @@ public class RangedItemTest
         Assert.assertEquals(0, item.compare(100));
         Assert.assertEquals(1, item.compare(101));
     }
+
+    @Test
+    public void compareTo()
+    {
+        RangedItem o0 = new RangedItem(10, 19);
+        RangedItem o1 = new RangedItem(10, 19);
+        RangedItem o2 = new RangedItem(20, 29);
+        RangedItem o3 = new RangedItem(10, 29);
+        RangedItem o4 = new RangedItem(5, 15);
+        RangedItem o5 = new RangedItem(15, 25);
+
+        Assert.assertEquals( 0, o0.compareTo(o1));
+        Assert.assertEquals(-1, o0.compareTo(o2));
+        Assert.assertEquals( 1, o2.compareTo(o0));
+        Assert.assertEquals(-1, o0.compareTo(o3));
+        Assert.assertEquals( 1, o3.compareTo(o0));
+        Assert.assertEquals( 1, o2.compareTo(o3));
+        Assert.assertEquals(-1, o3.compareTo(o2));
+        Assert.assertEquals( 1, o0.compareTo(o4));
+        Assert.assertEquals(-1, o0.compareTo(o5));
+    }
+
 }

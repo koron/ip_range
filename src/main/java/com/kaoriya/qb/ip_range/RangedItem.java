@@ -46,7 +46,6 @@ public class RangedItem<T> implements Comparable<RangedItem>
     @Override
     public int compareTo(RangedItem o)
     {
-        // TODO: write test.
         if (this.start < o.start)
             return -1;
         else if (this.start > o.start)

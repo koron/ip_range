@@ -9,7 +9,6 @@ public class RangedArray
 
     public RangedArray(RangedItem... items)
     {
-        // TODO: write test.
         this.array = Arrays.copyOf(items, items.length);
         sortByRange(this.array);
     }
