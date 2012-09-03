@@ -1,6 +1,6 @@
 package com.kaoriya.qb.ip_range;
 
-public class RangedItem<T>
+public class RangedItem<T> implements Comparable<RangedItem>
 {
 
     private int start;
@@ -38,6 +38,21 @@ public class RangedItem<T>
         if (pivot < this.start)
             return -1;
         else if (pivot > this.end)
+            return 1;
+        else
+            return 0;
+    }
+
+    @Override
+    public int compareTo(RangedItem o)
+    {
+        if (this.start < o.start)
+            return -1;
+        else if (this.start > o.start)
+            return 1;
+        else if (this.end < o.end)
+            return -1;
+        else if (this.end > o.end)
             return 1;
         else
             return 0;
