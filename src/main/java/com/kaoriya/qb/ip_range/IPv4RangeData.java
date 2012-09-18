@@ -49,4 +49,18 @@ public final class IPv4RangeData {
             .append("}");
         return s.toString();
     }
+
+    public static IPv4RangeData fromString(String str)
+    {
+        String[] values = str.split("\t", 3);
+        if (values.length < 3) {
+            return null;
+        }
+        IPv4 start = IPv4.fromString(values[0]);
+        IPv4 end = IPv4.fromString(values[1]);
+        if (start == null || end == null) {
+            return null;
+        }
+        return new IPv4RangeData(start, end, values[2]);
+    }
 }

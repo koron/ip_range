@@ -57,10 +57,24 @@ public class IPv4Test
         Assert.assertEquals(16777216, new IPv4(1, 0, 0, 0).intValue());
         Assert.assertEquals(2147483647,
                 new IPv4(127, 255, 255, 255).intValue());
-        Assert.assertEquals(-2147483648,
-                new IPv4(128, 0, 0, 0).intValue());
+        Assert.assertEquals(-2147483648, new IPv4(128, 0, 0, 0).intValue());
         Assert.assertEquals(-2, new IPv4(255, 255, 255, 254).intValue());
         Assert.assertEquals(-1, new IPv4(255, 255, 255, 255).intValue());
+    }
+
+    @Test
+    public void fromInt()
+    {
+        Assert.assertEquals(new IPv4(0, 0, 0, 0), new IPv4(0));
+        Assert.assertEquals(new IPv4(0, 0, 0, 1), new IPv4(1));
+        Assert.assertEquals(new IPv4(0, 0, 1, 0), new IPv4(256));
+        Assert.assertEquals(new IPv4(0, 1, 0, 0), new IPv4(65536));
+        Assert.assertEquals(new IPv4(1, 0, 0, 0), new IPv4(16777216));
+        Assert.assertEquals(new IPv4(127, 255, 255, 255),
+                new IPv4(2147483647));
+        Assert.assertEquals(new IPv4(128, 0, 0, 0), new IPv4(-2147483648));
+        Assert.assertEquals(new IPv4(255, 255, 255, 254), new IPv4(-2));
+        Assert.assertEquals(new IPv4(255, 255, 255, 255), new IPv4(-1));
     }
 
     @Test

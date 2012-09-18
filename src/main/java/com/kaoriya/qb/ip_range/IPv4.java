@@ -15,6 +15,13 @@ public final class IPv4 implements Iterable<Integer>
         this.values[3] = d;
     }
 
+    public IPv4(int num) {
+        this.values[0] = (num >> 24) & 0xff;
+        this.values[1] = (num >> 16) & 0xff;
+        this.values[2] = (num >>  8) & 0xff;
+        this.values[3] = (num >>  0) & 0xff;
+    }
+
     public IPv4()
     {
         this(0, 0, 0, 0);

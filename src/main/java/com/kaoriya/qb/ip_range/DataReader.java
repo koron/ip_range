@@ -39,24 +39,15 @@ public final class DataReader implements Closeable
                 close();
                 return null;
             }
-            IPv4RangeData data = parseAsData(line);
+            IPv4RangeData data = IPv4RangeData.fromString(line);
             if (data != null) {
-                return parseAsData(line);
+                return data;
             }
         }
     }
 
     public static IPv4RangeData parseAsData(String str)
     {
-        String[] values = str.split("\t", 3);
-        if (values.length < 3) {
-            return null;
-        }
-        IPv4 start = IPv4.fromString(values[0]);
-        IPv4 end = IPv4.fromString(values[1]);
-        if (start == null || end == null) {
-            return null;
-        }
-        return new IPv4RangeData(start, end, values[2]);
+        return IPv4RangeData.fromString(str);
     }
 }
