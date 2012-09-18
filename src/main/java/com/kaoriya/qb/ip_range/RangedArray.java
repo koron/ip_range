@@ -2,14 +2,21 @@ package com.kaoriya.qb.ip_range;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class RangedArray<T>
 {
-    private RangedItem<T>[] array;
+    private final RangedItem<T>[] array;
 
     public RangedArray(RangedItem<T>... items)
     {
         this.array = Arrays.copyOf(items, items.length);
+        sortByRange(this.array);
+    }
+
+    public RangedArray(List<RangedItem<T>> list)
+    {
+        this.array = list.toArray(new RangedItem[list.size()]);
         sortByRange(this.array);
     }
 
