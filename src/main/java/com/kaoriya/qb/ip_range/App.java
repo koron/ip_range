@@ -68,7 +68,10 @@ public class App
     public static void main(String[] args)
     {
         try {
+            long start = System.currentTimeMillis();
             func1();
+            long time = System.currentTimeMillis() - start;
+            System.out.format("%1$d secs\n", time / 1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
