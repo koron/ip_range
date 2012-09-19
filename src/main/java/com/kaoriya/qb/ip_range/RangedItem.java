@@ -58,4 +58,14 @@ public class RangedItem<T> implements Comparable<RangedItem>
             return 0;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("RangedItem{")
+            .append("start=").append(this.start).append(",")
+            .append("end=").append(this.end).append(",")
+            .append("value=").append(this.value)
+            .append("}");
+        return s.toString();
+    }
 }
