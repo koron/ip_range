@@ -65,10 +65,127 @@ public class App
         System.out.println("hitCount=" + hitCount);
     }
 
+    public static void read(DataReader r, IntRangeTable<String> table)
+        throws IOException
+    {
+        while (true) {
+            IPv4RangeData d = r.read();
+            if (d == null) {
+                break;
+            }
+            int start = IPv4Integer.valueOf(d.getStart());
+            int end = IPv4Integer.valueOf(d.getEnd());
+            table.add(start, end, d.getData());
+        }
+    }
+
+    public static String find(IntRangeTable<String> table, int value)
+    {
+        return table.find(IPv4Integer.valueOf(value));
+    }
+
+    public static void func2() throws IOException
+    {
+        IntRangeTable<String> table = new IntRangeTable();
+
+        DataReader reader = new DataReader(System.in);
+        try {
+            read(reader, table);
+        } finally {
+            reader.close();
+        }
+
+        int hitCount = 0;
+        for (int i = Integer.MIN_VALUE; true; ++i) {
+            String data = find(table, i);
+            if (data != null) {
+                ++hitCount;
+            }
+            if ((i & 0xffffff) == 0) {
+                System.out.println("curr=" + ((i >> 24) & 0xff));
+            }
+            if (i == Integer.MAX_VALUE) {
+                break;
+            }
+        }
+        System.out.println("hitCount=" + hitCount);
+    }
+
+    public static void read(
+            DataReader r,
+            Trie<Integer,TrieData> trie,
+            IntRangeTable<String> table)
+        throws IOException
+    {
+        while (true) {
+            IPv4RangeData d = r.read();
+            if (d == null) {
+                break;
+            }
+
+            List<CIDR> list = CIDRUtils.toCIDR(d);
+            for (CIDR v : list) {
+                TrieData td = new TrieData(v, d.getData());
+                trie.put(v.getAddress().intValue(), td);
+            }
+
+            int start = IPv4Integer.valueOf(d.getStart());
+            int end = IPv4Integer.valueOf(d.getEnd());
+            table.add(start, end, d.getData());
+        }
+    }
+
+    public static String find(
+            Trie<Integer,TrieData> trie,
+            IntRangeTable<String> table,
+            int value)
+    {
+        String v1 = find(trie, value);
+        String v2 = find(table, value);
+        if (v1 != v2) {
+            throw new RuntimeException("not match: value=" + value + " trie="
+                    + v1 + " table=" + v2);
+        }
+        return v1;
+    }
+
+
+    public static void func3() throws IOException
+    {
+        IntRangeTable<String> table = new IntRangeTable();
+        Trie<Integer,TrieData> trie = new PatriciaTrie(
+                IntegerKeyAnalyzer.INSTANCE);
+
+        DataReader reader = new DataReader(System.in);
+        try {
+            read(reader, trie, table);
+        } finally {
+            reader.close();
+        }
+
+        int hitCount = 0;
+        for (int i = Integer.MIN_VALUE; true; ++i) {
+            String data = find(trie, table, i);
+            if (data != null) {
+                ++hitCount;
+            }
+            if ((i & 0xffffff) == 0) {
+                System.out.println("curr=" + ((i >> 24) & 0xff));
+            }
+            if (i == Integer.MAX_VALUE) {
+                break;
+            }
+        }
+        System.out.println("hitCount=" + hitCount);
+    }
+
     public static void main(String[] args)
     {
         try {
-            func1();
+            long start = System.currentTimeMillis();
+            func3();
+            long time = System.currentTimeMillis() - start;
+            System.out.format("%1$d secs\n", time / 1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
