@@ -90,6 +90,14 @@ public class Tries {
             this.delegate = delegate;
         }
 
+        public Map.Entry<K, V> selectNear(K key) {
+            throw new UnsupportedOperationException();
+        }
+
+        public V selectNearValue(K key) {
+            throw new UnsupportedOperationException();
+        }
+
         @Override
         public synchronized Entry<K, V> select(K key, 
                 Cursor<? super K, ? super V> cursor) {
@@ -596,6 +604,14 @@ public class Tries {
             }
             
             this.delegate = delegate;
+        }
+
+        public Map.Entry<K, V> selectNear(K key) {
+            throw new UnsupportedOperationException();
+        }
+
+        public V selectNearValue(K key) {
+            throw new UnsupportedOperationException();
         }
         
         @Override

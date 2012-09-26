@@ -74,7 +74,21 @@ abstract class AbstractTrie<K, V> extends AbstractMap<K, V>
         }
         return entry.getValue();
     }
-    
+
+    public Map.Entry<K, V> selectNear(K key)
+    {
+        return select(key);
+    }
+
+    public V selectNearValue(K key)
+    {
+        Map.Entry<K, V> entry = selectNear(key);
+        if (entry == null) {
+            return null;
+        }
+        return entry.getValue();
+    }
+
     /**
      * {@inheritDoc}
      */
