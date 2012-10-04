@@ -53,8 +53,50 @@ public class App2
         return IPv4Integer.valueOf(rangeTable.get(r).get(r));
     }
 
+    static int getNextInvalidInt(Random r) {
+        return IPv4Integer.valueOf(rangeTable.getNegative(r));
+    }
+
+    static void negativeBench(String name, Finder finder, long seed) {
+        System.out.format("%0$s (negative) running\n", name);
+        Random r = new Random(seed);
+        long end = System.currentTimeMillis() + INTERVAL * 1000;
+        long count = 0;
+        while (System.currentTimeMillis() < end) {
+            int n = getNextInvalidInt(r);
+            String v = finder.find(n);
+            if (v != null) {
+                throw new RuntimeException("found for " + n);
+            }
+            ++count;
+        }
+        double qps = (double)count / INTERVAL;
+        System.out.format("%0$s result:\n", name);
+        System.out.format("  qps=%0$.2f\n", qps);
+    }
+
+    static void negativeBenchRange() {
+        negativeBench("range", new Finder() {
+            public String find(int n) {
+                return rangeTable.find(IPv4Integer.valueOf(n));
+            }
+        }, 1);
+    }
+
+    static void negativeBenchTrie() {
+        positiveBench("trie", new Finder() {
+            public String find(int n) {
+                TrieData td = trieTable.selectNearValue(n);
+                if (td == null) {
+                    return null;
+                }
+                return td.getCIDR().match(n) ? td.getData() : null;
+            }
+        }, 1);
+    }
+
     static void positiveBench(String name, Finder finder, long seed) {
-        System.out.format("%0$s running\n", name);
+        System.out.format("%0$s (positive) running\n", name);
         Random r = new Random(seed);
         long end = System.currentTimeMillis() + INTERVAL * 1000;
         long count = 0;
@@ -62,7 +104,7 @@ public class App2
             int n = getNextValidInt(r);
             String v = finder.find(n);
             if (v == null) {
-                throw new RuntimeException("not find" + n);
+                throw new RuntimeException("not find for " + n);
             }
             ++count;
         }
@@ -94,6 +136,8 @@ public class App2
     static void benchmark() {
         positiveBenchRange();
         positiveBenchTrie();
+        negativeBenchRange();
+        negativeBenchTrie();
     }
 
     public static void main(String[] args) {

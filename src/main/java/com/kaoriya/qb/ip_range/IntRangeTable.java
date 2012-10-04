@@ -77,4 +77,23 @@ public final class IntRangeTable<T>
     public IntRangeData<T> get(Random r) {
         return this.arrayList.get(r.nextInt(this.arrayList.size()));
     }
+
+    public int getNegative(Random r) {
+        int start = 1;
+        int end = 0;
+        while (start > end) {
+            int n = r.nextInt(this.arrayList.size() + 1);
+            if (n == 0) {
+                end = this.arrayList.get(0).getStart() - 1;
+                start = end >= 0 ? 0 : Integer.MIN_VALUE;
+            } else if (n >= this.arrayList.size()) {
+                start = this.arrayList.get(n - 1).getEnd() + 1;
+                end = start < 0 ? -1 : Integer.MAX_VALUE;
+            } else {
+                start = this.arrayList.get(n - 1).getEnd() + 1;
+                end = this.arrayList.get(n).getStart() - 1;
+            }
+        }
+        return start + r.nextInt(end - start + 1);
+    }
 }
