@@ -41,8 +41,8 @@ public class App2
         }
 
         System.gc();
-        System.out.println("Waiting 10 seconds");
-        //Thread.sleep(10000);
+        System.out.println("Waiting 5 seconds");
+        Thread.sleep(5000);
     }
 
     interface Finder {
@@ -53,7 +53,7 @@ public class App2
         return IPv4Integer.valueOf(rangeTable.get(r).get(r));
     }
 
-    static void runBench(String name, Finder finder, long seed) {
+    static void positiveBench(String name, Finder finder, long seed) {
         System.out.format("%0$s running\n", name);
         Random r = new Random(seed);
         long end = System.currentTimeMillis() + INTERVAL * 1000;
@@ -62,7 +62,7 @@ public class App2
             int n = getNextValidInt(r);
             String v = finder.find(n);
             if (v == null) {
-                new RuntimeException("not find" + n);
+                throw new RuntimeException("not find" + n);
             }
             ++count;
         }
@@ -71,16 +71,16 @@ public class App2
         System.out.format("  qps=%0$.2f\n", qps);
     }
 
-    static void runBenchRange() {
-        runBench("range", new Finder() {
+    static void positiveBenchRange() {
+        positiveBench("range", new Finder() {
             public String find(int n) {
                 return rangeTable.find(IPv4Integer.valueOf(n));
             }
         }, 1);
     }
 
-    static void runBenchTrie() {
-        runBench("trie", new Finder() {
+    static void positiveBenchTrie() {
+        positiveBench("trie", new Finder() {
             public String find(int n) {
                 TrieData td = trieTable.selectNearValue(n);
                 if (td == null) {
@@ -92,8 +92,8 @@ public class App2
     }
 
     static void benchmark() {
-        //runBenchRange();
-        runBenchTrie();
+        positiveBenchRange();
+        positiveBenchTrie();
     }
 
     public static void main(String[] args) {
