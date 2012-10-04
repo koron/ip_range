@@ -1,6 +1,7 @@
 package com.kaoriya.qb.ip_range;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public final class IntRangeTable<T>
 {
@@ -73,4 +74,7 @@ public final class IntRangeTable<T>
         return index < 0 ? null : this.arrayList.get(index);
     }
 
+    public IntRangeData<T> get(Random r) {
+        return this.arrayList.get(r.nextInt(this.arrayList.size()));
+    }
 }

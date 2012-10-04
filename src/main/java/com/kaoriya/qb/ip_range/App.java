@@ -1,7 +1,8 @@
 package com.kaoriya.qb.ip_range;
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
+
 import org.ardverk.collection.PatriciaTrie;
 import org.ardverk.collection.Trie;
 import org.ardverk.collection.IntegerKeyAnalyzer;
@@ -219,8 +220,9 @@ public class App
     public static void main(String[] args)
     {
         try {
+            Thread.sleep(10000);
             long start = System.currentTimeMillis();
-            func1a();
+            func2();
             long time = System.currentTimeMillis() - start;
             System.out.format("%1$d secs\n", time / 1000);
         } catch (Exception e) {

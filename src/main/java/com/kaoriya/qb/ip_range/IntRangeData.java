@@ -1,5 +1,6 @@
 package com.kaoriya.qb.ip_range;
 
+import java.util.Random;
 public class IntRangeData<T>
 {
 
@@ -36,6 +37,10 @@ public class IntRangeData<T>
             .append("end=").append(this.end).append(",")
             .append("data=").append(this.data).append("}");
         return s.toString();
+    }
+
+    public int get(Random r) {
+        return this.start + r.nextInt(this.end - this.start + 1);
     }
 
 }
