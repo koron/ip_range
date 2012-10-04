@@ -65,6 +65,43 @@ public class App
         System.out.println("hitCount=" + hitCount);
     }
 
+    public static String find1a(Trie<Integer,TrieData> trie, int value)
+    {
+        TrieData td = trie.selectNearValue(value);
+        if (td == null) {
+            return null;
+        }
+        return td.getCIDR().match(value) ? td.getData() : null;
+    }
+
+    public static void func1a() throws IOException
+    {
+        Trie<Integer,TrieData> trie = new PatriciaTrie(
+                IntegerKeyAnalyzer.INSTANCE);
+
+        DataReader reader = new DataReader(System.in);
+        try {
+            read(reader, trie);
+        } finally {
+            reader.close();
+        }
+
+        int hitCount = 0;
+        for (int i = Integer.MIN_VALUE; true; ++i) {
+            String data = find1a(trie, i);
+            if (data != null) {
+                ++hitCount;
+            }
+            if ((i & 0xffffff) == 0) {
+                System.out.println("curr=" + ((i >> 24) & 0xff));
+            }
+            if (i == Integer.MAX_VALUE) {
+                break;
+            }
+        }
+        System.out.println("hitCount=" + hitCount);
+    }
+
     public static void read(DataReader r, IntRangeTable<String> table)
         throws IOException
     {
@@ -183,7 +220,7 @@ public class App
     {
         try {
             long start = System.currentTimeMillis();
-            func3();
+            func1a();
             long time = System.currentTimeMillis() - start;
             System.out.format("%1$d secs\n", time / 1000);
         } catch (Exception e) {

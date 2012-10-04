@@ -50,6 +50,10 @@ public interface Trie<K, V> extends SortedMap<K, V> {
      */
     public Map.Entry<K, V> select(K key);
     
+    public Map.Entry<K, V> selectNear(K key);
+
+    public V selectNearValue(K key);
+
     /**
      * Returns the key that is closest in a bitwise XOR metric to the 
      * provided key. This is NOT lexicographic closeness!

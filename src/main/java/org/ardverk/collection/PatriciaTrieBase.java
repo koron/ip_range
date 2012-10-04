@@ -289,6 +289,13 @@ abstract class PatriciaTrieBase<K, V> extends AbstractTrie<K, V> {
         }
         return null;
     }
+
+    @Override
+    public Map.Entry<K, V> selectNear(K key) {
+        int lengthInBits = lengthInBits(key);
+        TrieEntry<K, V> entry = getNearestEntryForKey(key, lengthInBits);
+        return entry;
+    }
     
     /**
      * {@inheritDoc}
