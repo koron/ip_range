@@ -83,4 +83,11 @@ public final class CIDR
 
         return new CIDR(address, mask);
     }
+
+    public String toBitsString() {
+        StringBuilder s = new StringBuilder();
+        this.address.appendBitsString(s);
+        s.setLength(this.mask);
+        return s.toString();
+    }
 }

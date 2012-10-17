@@ -4,6 +4,17 @@ import java.util.Iterator;
 
 public final class IPv4 implements Iterable<Integer>
 {
+    private static String[] bitsPattern = new String[256];
+
+    static {
+        for (int i = 0, I = bitsPattern.length; i < I; ++i) {
+            StringBuilder s = new StringBuilder();
+            for (int mask = 0x80; mask != 0; mask >>= 1) {
+                s.append(((i & mask) == 0) ? '0' : '1');
+            }
+            bitsPattern[i] = s.toString();
+        }
+    }
 
     private final int[] values = new int[4];
 
@@ -113,5 +124,18 @@ public final class IPv4 implements Iterable<Integer>
             return null;
         }
         return new IPv4(nums[0], nums[1], nums[2], nums[3]);
+    }
+
+    public void appendBitsString(StringBuilder s) {
+        s.append(bitsPattern[this.values[0]]);
+        s.append(bitsPattern[this.values[1]]);
+        s.append(bitsPattern[this.values[2]]);
+        s.append(bitsPattern[this.values[3]]);
+    }
+
+    public String toBitsString() {
+        StringBuilder s = new StringBuilder();
+        appendBitsString(s);
+        return s.toString();
     }
 }

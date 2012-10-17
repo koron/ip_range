@@ -1,11 +1,12 @@
 package com.kaoriya.qb.ip_range;
 
 import java.util.List;
+import java.util.Random;
 
+import org.ardverk.collection.IntegerKeyAnalyzer;
 import org.ardverk.collection.PatriciaTrie;
 import org.ardverk.collection.Trie;
-import org.ardverk.collection.IntegerKeyAnalyzer;
-import java.util.Random;
+import org.trie4j.doublearray.DoubleArray;
 
 public class App2
 {
@@ -13,10 +14,13 @@ public class App2
 
     static IntRangeTable<String> rangeTable;
     static Trie<Integer, TrieData> trieTable;
+    static DoubleArray doubleArray;
 
     static void setup() throws Exception {
         rangeTable = new IntRangeTable<String>();
         trieTable = new PatriciaTrie(IntegerKeyAnalyzer.INSTANCE);
+        org.trie4j.patricia.simple.PatriciaTrie trie =
+            new org.trie4j.patricia.simple.PatriciaTrie();
 
         DataReader reader = new DataReader(System.in);
         try {
@@ -34,11 +38,14 @@ public class App2
                 for (CIDR v : list) {
                     TrieData td = new TrieData(v, d.getData());
                     trieTable.put(v.getAddress().intValue(), td);
+                    trie.insert(v.toBitsString());
                 }
             }
         } finally {
             reader.close();
         }
+
+        doubleArray = new DoubleArray(trie);
 
         System.gc();
         System.out.println("Waiting 5 seconds");
@@ -47,6 +54,16 @@ public class App2
 
     interface Finder {
         String find(int n);
+    }
+
+    static class DoubleArrayFinder implements Finder {
+        public String find(int n) {
+            if (doubleArray.contains3(n)) {
+                return "";
+            } else {
+                return null;
+            }
+        }
     }
 
     static int getNextValidInt(Random r) {
@@ -81,6 +98,10 @@ public class App2
                 return rangeTable.find(IPv4Integer.valueOf(n));
             }
         }, 1);
+    }
+
+    static void negativeBenchDoubleArray() {
+        negativeBench("double_array", new DoubleArrayFinder(), 1);
     }
 
     static void negativeBenchTrie() {
@@ -133,10 +154,16 @@ public class App2
         }, 1);
     }
 
+    static void positiveBenchDoubleArray() {
+        positiveBench("double_array", new DoubleArrayFinder(), 1);
+    }
+
     static void benchmark() {
+        positiveBenchDoubleArray();
+        negativeBenchDoubleArray();
         positiveBenchRange();
-        positiveBenchTrie();
         negativeBenchRange();
+        positiveBenchTrie();
         negativeBenchTrie();
     }
 

@@ -181,6 +181,51 @@ public class DoubleArray extends AbstractTrie implements Trie{
 		}
 	}
 
+	public boolean contains2(String text){
+		try{
+			int nodeIndex = 0; // root
+			int n = text.length();
+			for(int i = 0; i < n; i++){
+				int cid = findCharId(text.charAt(i));
+				if(cid == -1) return false;
+				int next = base[nodeIndex] + cid;
+				if(check[next] != nodeIndex) return false;
+				nodeIndex = next;
+				if (term.get(nodeIndex)) {
+					return true;
+				}
+			}
+			return term.get(nodeIndex);
+		} catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
+	}
+
+	public boolean contains3(int value){
+		try{
+			int nodeIndex = 0; // root
+			for (int mask = 0x80000000; mask != 0; mask >>>= 1) {
+				char ch = (value & mask) != 0 ? '1' : '0';
+				int cid = findCharId(ch);
+				if (cid == -1) {
+					return false;
+				}
+				int next = base[nodeIndex] + cid;
+				if (check[next] != nodeIndex) {
+					//System.out.format("HERE_C: %1$08x %2$08x\n", value, mask);
+					return false;
+				}
+				nodeIndex = next;
+				if (term.get(nodeIndex)) {
+					return true;
+				}
+			}
+			return term.get(nodeIndex);
+		} catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
+	}
+
 	@Override
 	public Iterable<String> commonPrefixSearch(String query) {
 		List<String> ret = new ArrayList<String>();
