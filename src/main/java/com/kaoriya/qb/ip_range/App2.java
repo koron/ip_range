@@ -159,12 +159,21 @@ public class App2
     }
 
     static void benchmark() {
+        benchmark1();
+    }
+
+    static void benchmark1() {
         positiveBenchDoubleArray();
         negativeBenchDoubleArray();
         positiveBenchRange();
         negativeBenchRange();
         positiveBenchTrie();
         negativeBenchTrie();
+    }
+
+    static void benchmark2() {
+        positiveBenchDoubleArray();
+        negativeBenchDoubleArray();
     }
 
     public static void main(String[] args) {
