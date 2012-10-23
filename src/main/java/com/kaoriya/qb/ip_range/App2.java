@@ -44,6 +44,7 @@ public class App2
         } finally {
             reader.close();
         }
+        rangeTable.updateNegativeList();
 
         doubleArray = new DoubleArray(trie);
 
@@ -67,11 +68,11 @@ public class App2
     }
 
     static int getNextValidInt(Random r) {
-        return IPv4Integer.valueOf(rangeTable.get(r).get(r));
+        return IPv4Integer.valueOf(rangeTable.getPositive(r));
     }
 
     static int getNextInvalidInt(Random r) {
-        return IPv4Integer.valueOf(rangeTable.getNegative(r));
+        return IPv4Integer.valueOf(rangeTable.getNegative2(r));
     }
 
     static void negativeBench(String name, Finder finder, long seed) {
@@ -105,7 +106,7 @@ public class App2
     }
 
     static void negativeBenchTrie() {
-        positiveBench("trie", new Finder() {
+        negativeBench("trie", new Finder() {
             public String find(int n) {
                 TrieData td = trieTable.selectNearValue(n);
                 if (td == null) {
@@ -158,8 +159,56 @@ public class App2
         positiveBench("double_array", new DoubleArrayFinder(), 1);
     }
 
+    static void positiveBenchCount(
+            String name,
+            Finder finder,
+            int countMax,
+            long seed)
+    {
+        System.out.format("%0$s (count positive) running\n", name);
+        Random r = new Random(seed);
+        long count = 0;
+        long start = System.currentTimeMillis();
+        while (count < countMax) {
+            int n = getNextValidInt(r);
+            /*
+            String v = finder.find(n);
+            if (v == null) {
+                throw new RuntimeException("not find for " + n);
+            }
+            */
+            ++count;
+        }
+        long duration = System.currentTimeMillis() - start;
+        System.out.format("duration=%0$.3f\n", duration / 1000f);
+    }
+
+    static void negativeBenchCount(
+            String name,
+            Finder finder,
+            int countMax,
+            long seed)
+    {
+        System.out.format("%0$s (count negative) running\n", name);
+        Random r = new Random(seed);
+        long count = 0;
+        long start = System.currentTimeMillis();
+        while (count < countMax) {
+            int n = getNextInvalidInt(r);
+            /*
+            String v = finder.find(n);
+            if (v != null) {
+                throw new RuntimeException("found for " + n);
+            }
+            */
+            ++count;
+        }
+        long duration = System.currentTimeMillis() - start;
+        System.out.format("duration=%0$.3f\n", duration / 1000f);
+    }
+
     static void benchmark() {
-        benchmark1();
+        benchmark2();
     }
 
     static void benchmark1() {
@@ -172,8 +221,9 @@ public class App2
     }
 
     static void benchmark2() {
-        positiveBenchDoubleArray();
-        negativeBenchDoubleArray();
+        DoubleArrayFinder finder = new DoubleArrayFinder();
+        positiveBenchCount("double_array", finder, 1000000, 1);
+        negativeBenchCount("double_array", finder, 1000000, 1);
     }
 
     public static void main(String[] args) {

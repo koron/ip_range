@@ -8,11 +8,15 @@ public final class IntRangeTable<T>
 
     private final ArrayList<IntRangeData<T>> arrayList = new ArrayList();
 
+    private final ArrayList<IntRangeData<Object>> negativeList
+        = new ArrayList();
+
     public IntRangeTable() {
     }
 
     public void clear() {
         this.arrayList.clear();
+        this.negativeList.clear();
     }
 
     private int findIndex(int rangeStart, int rangeEnd) {
@@ -64,6 +68,44 @@ public final class IntRangeTable<T>
         add(new IntRangeData<T>(start, end, data));
     }
 
+    public void updateNegativeList() {
+        this.negativeList.clear();
+        int prev = Integer.MIN_VALUE;
+        for (IntRangeData<T> item : this.arrayList) {
+            int curr = item.getStart();
+            if (prev < curr) {
+                if (prev < 0 && curr >= 0) {
+                    this.negativeList.add(
+                            new IntRangeData<Object>(prev, -1, null));
+                    this.negativeList.add(
+                            new IntRangeData<Object>(0, curr, null));
+                } else {
+                    this.negativeList.add(
+                            new IntRangeData<Object>(prev, curr - 1, null));
+                }
+            }
+            prev = item.getEnd();
+            if (prev == Integer.MAX_VALUE) {
+                break;
+            }
+            prev += 1;
+        }
+        if (prev < Integer.MAX_VALUE) {
+            if (prev < 0) {
+                this.negativeList.add(new IntRangeData<Object>(prev,
+                            -1, null));
+                this.negativeList.add(new IntRangeData<Object>(0,
+                            0x3FFFFFFF, null));
+                this.negativeList.add(new IntRangeData<Object>(0x40000000,
+                            Integer.MAX_VALUE, null));
+            } else {
+                this.negativeList.add(new IntRangeData<Object>(prev,
+                            Integer.MAX_VALUE, null));
+            }
+        }
+        // TODO:
+    }
+
     public T find(int value) {
         IntRangeData<T> data = findRangeData(value);
         return data == null ? null : data.getData();
@@ -76,6 +118,12 @@ public final class IntRangeTable<T>
 
     public IntRangeData<T> get(Random r) {
         return this.arrayList.get(r.nextInt(this.arrayList.size()));
+    }
+
+    public int getPositive(Random r) {
+        //return get(r).get(r);
+        int index = r.nextInt(this.arrayList.size());
+        return this.arrayList.get(index).get(r);
     }
 
     public int getNegative(Random r) {
@@ -95,5 +143,10 @@ public final class IntRangeTable<T>
             }
         }
         return start + r.nextInt(end - start + 1);
+    }
+
+    public int getNegative2(Random r) {
+        int index = r.nextInt(this.negativeList.size());
+        return this.negativeList.get(index).get(r);
     }
 }
