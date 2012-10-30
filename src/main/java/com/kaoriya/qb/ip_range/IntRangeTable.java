@@ -8,7 +8,10 @@ public final class IntRangeTable<T>
 
     private final ArrayList<IntRangeData<T>> arrayList = new ArrayList();
 
-    private final ArrayList<IntRangeData<Object>> negativeList
+    private final ArrayList<IntRangeData<T>> negativeList
+        = new ArrayList();
+
+    private final ArrayList<IntRangeData<T>> positiveList
         = new ArrayList();
 
     public IntRangeTable() {
@@ -17,6 +20,7 @@ public final class IntRangeTable<T>
     public void clear() {
         this.arrayList.clear();
         this.negativeList.clear();
+        this.positiveList.clear();
     }
 
     private int findIndex(int rangeStart, int rangeEnd) {
@@ -69,41 +73,8 @@ public final class IntRangeTable<T>
     }
 
     public void updateNegativeList() {
-        this.negativeList.clear();
-        int prev = Integer.MIN_VALUE;
-        for (IntRangeData<T> item : this.arrayList) {
-            int curr = item.getStart();
-            if (prev < curr) {
-                if (prev < 0 && curr >= 0) {
-                    this.negativeList.add(
-                            new IntRangeData<Object>(prev, -1, null));
-                    this.negativeList.add(
-                            new IntRangeData<Object>(0, curr, null));
-                } else {
-                    this.negativeList.add(
-                            new IntRangeData<Object>(prev, curr - 1, null));
-                }
-            }
-            prev = item.getEnd();
-            if (prev == Integer.MAX_VALUE) {
-                break;
-            }
-            prev += 1;
-        }
-        if (prev < Integer.MAX_VALUE) {
-            if (prev < 0) {
-                this.negativeList.add(new IntRangeData<Object>(prev,
-                            -1, null));
-                this.negativeList.add(new IntRangeData<Object>(0,
-                            0x3FFFFFFF, null));
-                this.negativeList.add(new IntRangeData<Object>(0x40000000,
-                            Integer.MAX_VALUE, null));
-            } else {
-                this.negativeList.add(new IntRangeData<Object>(prev,
-                            Integer.MAX_VALUE, null));
-            }
-        }
-        // TODO:
+        invertRange(this.arrayList, this.negativeList);
+        invertRange(this.negativeList, this.positiveList);
     }
 
     public T find(int value) {
@@ -121,32 +92,50 @@ public final class IntRangeTable<T>
     }
 
     public int getPositive(Random r) {
-        //return get(r).get(r);
-        int index = r.nextInt(this.arrayList.size());
-        return this.arrayList.get(index).get(r);
-    }
-
-    public int getNegative(Random r) {
-        int start = 1;
-        int end = 0;
-        while (start > end) {
-            int n = r.nextInt(this.arrayList.size() + 1);
-            if (n == 0) {
-                end = this.arrayList.get(0).getStart() - 1;
-                start = end >= 0 ? 0 : Integer.MIN_VALUE;
-            } else if (n >= this.arrayList.size()) {
-                start = this.arrayList.get(n - 1).getEnd() + 1;
-                end = start < 0 ? -1 : Integer.MAX_VALUE;
-            } else {
-                start = this.arrayList.get(n - 1).getEnd() + 1;
-                end = this.arrayList.get(n).getStart() - 1;
-            }
-        }
-        return start + r.nextInt(end - start + 1);
+        int index = r.nextInt(this.positiveList.size());
+        return this.positiveList.get(index).get(r);
     }
 
     public int getNegative2(Random r) {
         int index = r.nextInt(this.negativeList.size());
         return this.negativeList.get(index).get(r);
     }
+
+    public void invertRange(
+            ArrayList<IntRangeData<T>> input,
+            ArrayList<IntRangeData<T>> output)
+    {
+        output.clear();
+
+        int prev = Integer.MIN_VALUE;
+        for (IntRangeData item : input) {
+            int curr = item.getStart();
+            if (prev < curr) {
+                addRangeData(output, prev, curr - 1);
+            }
+            prev = item.getEnd();
+            if (prev == Integer.MAX_VALUE) {
+                break;
+            }
+            prev += 1;
+        }
+
+        if (prev < Integer.MAX_VALUE) {
+            addRangeData(output, prev, Integer.MAX_VALUE);
+        }
+    }
+
+    private void addRangeData(
+            ArrayList<IntRangeData<T>> list,
+            int start,
+            int end)
+    {
+        while (((long)end - (long)start + 1L) >= 0x80000000L) {
+            int mid = start + 0x7FFFFFFF;
+            list.add(new IntRangeData(start, mid - 1, null));
+            start = mid;
+        }
+        list.add(new IntRangeData(start, end, null));
+    }
+
 }

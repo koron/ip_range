@@ -208,16 +208,16 @@ public class App2
     }
 
     static void benchmark() {
-        benchmark2();
+        benchmark1();
     }
 
     static void benchmark1() {
-        positiveBenchDoubleArray();
-        negativeBenchDoubleArray();
         positiveBenchRange();
         negativeBenchRange();
         positiveBenchTrie();
         negativeBenchTrie();
+        positiveBenchDoubleArray();
+        negativeBenchDoubleArray();
     }
 
     static void benchmark2() {
