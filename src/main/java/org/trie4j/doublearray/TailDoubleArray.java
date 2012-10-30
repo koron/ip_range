@@ -153,6 +153,40 @@ public class TailDoubleArray extends AbstractTrie implements Trie{
 		}
 	}
 
+	public boolean contains3(int value){
+		try{
+			int nodeIndex = 0; // root
+			TailCharIterator it = new TailCharIterator(tails, -1);
+			for (int mask = 0x80000000; mask != 0; mask >>>= 1) {
+				char ch = (value & mask) != 0 ? '1' : '0';
+				int cid = findCharId(ch);
+				if(cid == -1) {
+					return false;
+				}
+				int next = base[nodeIndex] + cid;
+				if(check[next] != nodeIndex) return false;
+				nodeIndex = next;
+				it.setIndex(tail[nodeIndex]);
+				while (it.hasNext()) {
+					mask >>>= 1;
+					if (mask == 0) {
+						return false;
+					}
+					ch = (value & mask) != 0 ? '1' : '0';
+					if (ch != it.next()) {
+						return false;
+					}
+				}
+				if (term.get(nodeIndex)) {
+					return true;
+				}
+			}
+			return term.get(nodeIndex);
+		} catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
+	}
+
 	@Override
 	public Iterable<String> commonPrefixSearch(String query) {
 		List<String> ret = new ArrayList<String>();
