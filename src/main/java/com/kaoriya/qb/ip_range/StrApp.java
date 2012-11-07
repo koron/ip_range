@@ -13,6 +13,7 @@ import java.util.Random;
 import org.ardverk.collection.StringKeyAnalyzer;
 import org.ardverk.collection.PatriciaTrie;
 import org.trie4j.doublearray.DoubleArray;
+import org.trie4j.doublearray.TailDoubleArray;
 
 public class StrApp
 {
@@ -99,6 +100,10 @@ public class StrApp
         public abstract boolean match(String s) throws Exception;
     }
 
+    public static long usedMemory(Runtime runtime) {
+        return runtime.totalMemory() - runtime.freeMemory();
+    }
+
     public static void run(
             File hostFile,
             File urlFile,
@@ -107,9 +112,16 @@ public class StrApp
             int loop)
         throws Exception
     {
-        System.out.format("%1$s: running (expected_ratio:%2$d loop:%3$d)\n",
-                matcher.getName(), percentage, loop);
+        Runtime runtime = Runtime.getRuntime();
+
+        runtime.gc();
+        runtime.gc();
+        long memPre = usedMemory(runtime);
         loadKeys(hostFile, matcher, percentage);
+        runtime.gc();
+        runtime.gc();
+        long memPost = usedMemory(runtime);
+
         List<String> urlList = loadLines(urlFile);
 
         int countMatch = 0;
@@ -127,10 +139,12 @@ public class StrApp
         long end = System.nanoTime();
         long duration = end - start;
 
-        System.out.format("%1$s: ratio:%2$.2f%% duration:%3$.6fs\n",
+        System.out.format(
+                "%1$-16s: hit:%2$.2f%% duration:%3$.6fs memory:%4$d\n",
                 matcher.getName(),
                 countMatch * 100d / (countMatch + countUnmatch),
-                duration / 1000000000d);
+                duration / 1000000000d,
+                memPost - memPre);
     }
 
     public static class PatriciaTrieMatcher extends Matcher {
@@ -167,6 +181,33 @@ public class StrApp
         @Override
         public void addEnd() throws Exception {
             this.table = new DoubleArray(trie);
+            this.table.trimToSize();
+            this.trie = null;
+        }
+        @Override
+        public boolean match(String s) throws Exception {
+            return this.table.contains2(s);
+        }
+    }
+
+    public static class TailDArrayMatcher extends Matcher {
+        private TailDoubleArray table = null;
+        private org.trie4j.patricia.simple.PatriciaTrie trie = null;
+        public TailDArrayMatcher() {
+            super("TailDArray");
+        }
+        @Override
+        public void addStart() throws Exception {
+            this.trie = new org.trie4j.patricia.simple.PatriciaTrie();
+        }
+        @Override
+        public void add(String s) throws Exception {
+            this.trie.insert(s);
+        }
+        @Override
+        public void addEnd() throws Exception {
+            this.table = new TailDoubleArray(trie);
+            this.table.trimToSize();
             this.trie = null;
         }
         @Override
@@ -178,8 +219,13 @@ public class StrApp
     public static void main(File hostFile, File urlFile)
         throws Exception
     {
-        run(hostFile, urlFile, new PatriciaTrieMatcher(), 100, 100);
-        run(hostFile, urlFile, new DoubleArrayMatcher(), 100, 100);
+        int loop = 100;
+        for (int ratio = 25; ratio <= 100; ratio += 25) {
+            System.out.format("*** ratio:%1$d loop:%2$d\n", ratio, loop);
+            run(hostFile, urlFile, new PatriciaTrieMatcher(), ratio, loop);
+            run(hostFile, urlFile, new DoubleArrayMatcher(),  ratio, loop);
+            run(hostFile, urlFile, new TailDArrayMatcher(),   ratio, loop);
+        }
     }
 
     public static void main(String[] args) {

@@ -153,6 +153,33 @@ public class TailDoubleArray extends AbstractTrie implements Trie{
 		}
 	}
 
+	public boolean contains2(String text){
+		try{
+			int nodeIndex = 0; // root
+			TailCharIterator it = new TailCharIterator(tails, -1);
+			int n = text.length();
+			for(int i = 0; i < n; i++){
+				int cid = findCharId(text.charAt(i));
+				if(cid == -1) return false;
+				int next = base[nodeIndex] + cid;
+				if(check[next] != nodeIndex) return false;
+				nodeIndex = next;
+				it.setIndex(tail[nodeIndex]);
+				while(it.hasNext()){
+					i++;
+					if(i == n) return false;
+					if(text.charAt(i) != it.next()) return false;
+				}
+				if (term.get(nodeIndex)) {
+					return true;
+				}
+			}
+			return term.get(nodeIndex);
+		} catch(ArrayIndexOutOfBoundsException e){
+			return false;
+		}
+	}
+
 	public boolean contains3(int value){
 		try{
 			int nodeIndex = 0; // root
