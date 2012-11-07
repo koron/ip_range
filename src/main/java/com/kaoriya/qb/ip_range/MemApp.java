@@ -147,6 +147,7 @@ public class MemApp
             this.trie = new org.trie4j.patricia.simple.PatriciaTrie();
             super.run();
             this.table = new DoubleArray(trie);
+            this.table.trimToSize();
             this.trie = null;
         }
         @Override
