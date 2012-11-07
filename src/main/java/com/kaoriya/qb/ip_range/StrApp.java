@@ -47,6 +47,26 @@ public class StrApp
         return trie;
     }
 
+    private static void loadKeys(File file, Matcher matcher, int percent)
+        throws Exception
+    {
+        Random r = new Random(0);
+        BufferedReader reader = newReader(file);
+        try {
+            while (true) {
+                String line = reader.readLine();
+                if (line == null) {
+                    break;
+                } else if (r.nextInt(100) >= percent) {
+                    continue;
+                }
+                matcher.add(line);
+            }
+        } finally {
+            reader.close();
+        }
+    }
+
     private static List<String> loadLines(File urlFile) throws Exception {
         ArrayList<String> list = new ArrayList(100000);
         BufferedReader reader = newReader(urlFile);
@@ -64,37 +84,79 @@ public class StrApp
         return list;
     }
 
-    public static void main(File hostFile, File urlFile)
+    public static abstract class Matcher {
+        protected final String name;
+        protected Matcher(String name) {
+            this.name = name;
+        }
+        public final String getName() { return this.name; }
+        public abstract void add(String s) throws Exception;
+        public abstract boolean match(String s) throws Exception;
+    }
+
+    public static void run(
+            File hostFile,
+            File urlFile,
+            Matcher matcher,
+            int percentage,
+            int loop)
         throws Exception
     {
-        PatriciaTrie<String, Boolean> trie100 =
-            newPatriciaTrie(hostFile, 100);
+        System.out.format("%1$s: loading #1 (ratio:%2$d loop:%3$d)\n",
+                matcher.getName(), percentage, loop);
+        loadKeys(hostFile, matcher, percentage);
 
+        System.out.format("%1$s: loading #2\n", matcher.getName());
         List<String> urlList = loadLines(urlFile);
 
+        System.out.format("%1$s: matching #2\n", matcher.getName());
         int countMatch = 0;
         int countUnmatch = 0;
         long start = System.nanoTime();
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < loop; ++i) {
             for (String item : urlList) {
-                Map.Entry<String, Boolean> entry = trie100.selectNear(item);
-                if (!item.startsWith(entry.getKey())) {
-                    ++countUnmatch;
-                } else {
+                if (matcher.match(item)) {
                     ++countMatch;
+                } else {
+                    ++countUnmatch;
                 }
             }
         }
         long end = System.nanoTime();
         long duration = end - start;
 
-        System.out.format("  match=%1$d unmatch=%2$d total=%3$d\n",
-                countMatch, countUnmatch, countMatch + countUnmatch);
+        System.out.format("%4$s: match=%1$d unmatch=%2$d total=%3$d\n",
+                countMatch, countUnmatch, countMatch + countUnmatch,
+                matcher.getName());
 
-        System.out.format("  duration: %1$d.%2$03ds (%3$d nano)\n",
+        System.out.format("%4$s: duration: %1$d.%2$03ds (%3$d nano)\n",
                 duration / 1000000000,
                 (duration % 1000000000) / 1000000,
-                duration);
+                duration,
+                matcher.getName());
+    }
+
+    public static class PatriciaTrieMatcher extends Matcher {
+        private final PatriciaTrie<String, Boolean> trie;
+        PatriciaTrieMatcher() {
+            super("PatriciaTrie");
+            this.trie = new PatriciaTrie(StringKeyAnalyzer.INSTANCE);
+        }
+        @Override
+        public void add(String s) throws Exception {
+            this.trie.put(s, Boolean.TRUE);
+        }
+        @Override
+        public boolean match(String s) throws Exception {
+            Map.Entry<String, Boolean> entry = this.trie.selectNear(s);
+            return s.startsWith(entry.getKey());
+        }
+    }
+
+    public static void main(File hostFile, File urlFile)
+        throws Exception
+    {
+        run(hostFile, urlFile, new PatriciaTrieMatcher(), 100, 100);
     }
 
     public static void main(String[] args) {
