@@ -107,7 +107,7 @@ public class StrApp
             int loop)
         throws Exception
     {
-        System.out.format("%1$s: running (expected ratio:%2$d loop:%3$d)\n",
+        System.out.format("%1$s: running (expected_ratio:%2$d loop:%3$d)\n",
                 matcher.getName(), percentage, loop);
         loadKeys(hostFile, matcher, percentage);
         List<String> urlList = loadLines(urlFile);
@@ -127,15 +127,10 @@ public class StrApp
         long end = System.nanoTime();
         long duration = end - start;
 
-        System.out.format("%1$s: ratio:%2$.2f%%\n",
+        System.out.format("%1$s: ratio:%2$.2f%% duration:%3$.6fs\n",
                 matcher.getName(),
-                countMatch * 100d / (countMatch + countUnmatch));
-
-        System.out.format("%4$s: duration:%1$d.%2$03ds (%3$d nano)\n",
-                duration / 1000000000,
-                (duration % 1000000000) / 1000000,
-                duration,
-                matcher.getName());
+                countMatch * 100d / (countMatch + countUnmatch),
+                duration / 1000000000d);
     }
 
     public static class PatriciaTrieMatcher extends Matcher {
