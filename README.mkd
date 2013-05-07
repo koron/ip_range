@@ -1,0 +1,18 @@
+# IP Range
+
+Peparation:
+
+    $ mvn compile
+
+## Memory benchmark.
+
+    $ java -cp target/classes com.kaoriya.qb.ip_range.MemApp tmp/10000.txt
+
+It shows BinarySearch2 (=IntRangeArray) is the lowest memory.
+
+## Speed benchmark.
+
+    $ java -cp target/classes com.kaoriya.qb.ip_range.App2 < tmp/10000.txt
+
+It takes over 5 minutes, and shows that BinarySearch2 (=IntRangeArray) is not
+so fast.

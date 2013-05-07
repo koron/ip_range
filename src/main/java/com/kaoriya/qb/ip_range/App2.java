@@ -16,6 +16,7 @@ public class App2
     public static final int INTERVAL = 30;
 
     static IntRangeTable<String> rangeTable;
+    static IntRangeArray<String> rangeArray;
     static Trie<Integer, TrieData> trieTable;
     static DoubleArray doubleArray;
     static TailDoubleArray tailDoubleArray;
@@ -55,6 +56,7 @@ public class App2
         }
 
         System.out.println("Intializing pattern generator");
+        rangeArray = new IntRangeArray<String>(rangeTable, String.class);
         rangeTable.updateNegativeList();
 
         System.out.println("Building da1");
@@ -78,6 +80,12 @@ public class App2
     static class RangeTableFinder implements Finder {
         public String find(int n) {
             return rangeTable.find(IPv4Integer.valueOf(n));
+        }
+    }
+
+    static class RangeArrayFinder implements Finder {
+        public String find(int n) {
+            return rangeArray.find(IPv4Integer.valueOf(n));
         }
     }
 
@@ -156,6 +164,10 @@ public class App2
         negativeBench("range", new RangeTableFinder(), 1);
     }
 
+    static void negativeBenchArray() {
+        negativeBench("array", new RangeArrayFinder(), 1);
+    }
+
     static void negativeBenchTrie() {
         negativeBench("trie", new TrieTableFinder(), 1);
     }
@@ -192,6 +204,10 @@ public class App2
 
     static void positiveBenchRange() {
         positiveBench("range", new RangeTableFinder(), 1);
+    }
+
+    static void positiveBenchArray() {
+        positiveBench("array", new RangeArrayFinder(), 1);
     }
 
     static void positiveBenchTrie() {
@@ -265,6 +281,8 @@ public class App2
     static void benchmark1() {
         positiveBenchRange();
         negativeBenchRange();
+        positiveBenchArray();
+        negativeBenchArray();
         positiveBenchTrie();
         negativeBenchTrie();
         positiveBenchDoubleArray();

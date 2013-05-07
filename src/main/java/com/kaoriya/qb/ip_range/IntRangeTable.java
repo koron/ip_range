@@ -5,8 +5,7 @@ import java.util.Random;
 
 public final class IntRangeTable<T>
 {
-
-    private final ArrayList<IntRangeData<T>> arrayList = new ArrayList();
+    final ArrayList<IntRangeData<T>> arrayList = new ArrayList();
 
     private final ArrayList<IntRangeData<T>> negativeList
         = new ArrayList();

@@ -62,6 +62,7 @@ public class MemApp
             this.file = file;
         }
         protected abstract void add(IPv4RangeData data) throws Exception;
+        protected abstract void endAdd() throws Exception;
         public void run() {
             DataReader reader = null;
             try {
@@ -73,6 +74,7 @@ public class MemApp
                     }
                     add(data);
                 }
+                endAdd();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -91,13 +93,16 @@ public class MemApp
         protected void add(IPv4RangeData data) throws Exception {
         }
         @Override
+        protected void endAdd() throws Exception {
+        }
+        @Override
         public void close() {
         }
     }
 
     public static class BinarySearch extends Null
     {
-        private IntRangeTable<String> table;
+        protected IntRangeTable<String> table;
         public BinarySearch(File file) {
             super(file);
             this.table = new IntRangeTable();
@@ -111,6 +116,25 @@ public class MemApp
         @Override
         public void close() {
             this.table = null;
+        }
+    }
+
+    public static class BinarySearch2 extends BinarySearch
+    {
+        protected IntRangeArray<String> array;
+        public BinarySearch2(File file) {
+            super(file);
+            this.array = null;
+        }
+        @Override
+        protected void endAdd() {
+            this.array = new IntRangeArray<String>(this.table, String.class);
+            this.table = null;
+        }
+        @Override
+        public void close() {
+            super.close();
+            this.array = null;
         }
     }
 
@@ -180,6 +204,14 @@ public class MemApp
         measureMemory("BinarySearch#5", new BinarySearch(file));
     }
 
+    public static void testBinarySearch2(File file) throws Exception {
+        measureMemory("BinarySearch2#1", new BinarySearch2(file));
+        measureMemory("BinarySearch2#2", new BinarySearch2(file));
+        measureMemory("BinarySearch2#3", new BinarySearch2(file));
+        measureMemory("BinarySearch2#4", new BinarySearch2(file));
+        measureMemory("BinarySearch2#5", new BinarySearch2(file));
+    }
+
     public static void testArdverkPatricia(File file) throws Exception {
         measureMemory("ArdverkPatricia#1", new ArdverkPatricia(file));
         measureMemory("ArdverkPatricia#2", new ArdverkPatricia(file));
@@ -199,6 +231,7 @@ public class MemApp
     public static void main2(File file) throws Exception {
         testNull(file);
         testBinarySearch(file);
+        testBinarySearch2(file);
         testArdverkPatricia(file);
         testTrie4JDoubleArray(file);
     }
