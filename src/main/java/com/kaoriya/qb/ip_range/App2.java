@@ -24,10 +24,10 @@ public class App2
 
     static void setup() throws Exception {
         rangeTable = new IntRangeTable<String>();
-        trieTable = new PatriciaTrie(IntegerKeyAnalyzer.INSTANCE);
+        trieTable = new PatriciaTrie<>(IntegerKeyAnalyzer.INSTANCE);
         org.trie4j.patricia.simple.PatriciaTrie trie =
             new org.trie4j.patricia.simple.PatriciaTrie();
-        ArrayList<String> bitStrList = new ArrayList();
+        ArrayList<String> bitStrList = new ArrayList<>();
 
         System.out.println("Loading data");
         DataReader reader = new DataReader(System.in);

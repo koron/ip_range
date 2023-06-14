@@ -30,8 +30,7 @@ public class StrApp
         throws Exception
     {
         Random r = new Random(0);
-        PatriciaTrie<String, Boolean> trie =
-            new PatriciaTrie(StringKeyAnalyzer.INSTANCE);
+        PatriciaTrie<String, Boolean> trie = new PatriciaTrie<>(StringKeyAnalyzer.INSTANCE);
         BufferedReader reader = newReader(hostFile);
         try {
             while (true) {
@@ -72,7 +71,7 @@ public class StrApp
     }
 
     private static List<String> loadLines(File urlFile) throws Exception {
-        ArrayList<String> list = new ArrayList(100000);
+        ArrayList<String> list = new ArrayList<>(100000);
         BufferedReader reader = newReader(urlFile);
         try {
             while (true) {
@@ -151,7 +150,7 @@ public class StrApp
         private final PatriciaTrie<String, Boolean> trie;
         public PatriciaTrieMatcher() {
             super("PatriciaTrie");
-            this.trie = new PatriciaTrie(StringKeyAnalyzer.INSTANCE);
+            this.trie = new PatriciaTrie<>(StringKeyAnalyzer.INSTANCE);
         }
         @Override
         public void add(String s) throws Exception {

@@ -10,11 +10,11 @@ public class IPv4TableTest
     public void find()
     {
         String v = new String("foo");
-        IPv4Table<String> table = new IPv4Table(
-                new RangedArray(new RangedItem(10, 10,
-                        new RangedArray(new RangedItem(20, 20,
-                                new RangedArray(new RangedItem(30, 30,
-                                        new RangedArray(new RangedItem(40, 40,
+        IPv4Table<String> table = new IPv4Table<>(
+                new RangedArray<>(new RangedItem<>(10, 10,
+                        new RangedArray<>(new RangedItem<>(20, 20,
+                                new RangedArray<>(new RangedItem<>(30, 30,
+                                        new RangedArray<>(new RangedItem<>(40, 40,
                                                 v)))))))));
 
         Assert.assertNull(table.find(new IPv4(11, 20, 30, 40)));

@@ -105,7 +105,7 @@ public class MemApp
         protected IntRangeTable<String> table;
         public BinarySearch(File file) {
             super(file);
-            this.table = new IntRangeTable();
+            this.table = new IntRangeTable<>();
         }
         @Override
         protected void add(IPv4RangeData data) throws Exception {
@@ -143,7 +143,7 @@ public class MemApp
         private PatriciaTrie<Integer, TrieData> table;
         public ArdverkPatricia(File file) {
             super(file);
-            this.table = new PatriciaTrie(IntegerKeyAnalyzer.INSTANCE);
+            this.table = new PatriciaTrie<>(IntegerKeyAnalyzer.INSTANCE);
         }
         @Override
         protected void add(IPv4RangeData data) throws Exception {

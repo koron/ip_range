@@ -10,18 +10,18 @@ public class CIDRUtilsTest
 
     @Test
     public void toCIDR() {
-        ArrayList<CIDR> expected1 = new ArrayList();
+        ArrayList<CIDR> expected1 = new ArrayList<>();
         expected1.add(CIDR.fromString("192.168.0.0/16"));
         assertEquals(expected1, CIDRUtils.toCIDR(IPv4RangeData.fromString(
                         "192.168.0.0\t192.168.255.255\t")));
 
-        ArrayList<CIDR> expected2 = new ArrayList();
+        ArrayList<CIDR> expected2 = new ArrayList<>();
         expected2.add(CIDR.fromString("192.168.0.17/32"));
         expected2.add(CIDR.fromString("192.168.0.18/31"));
         assertEquals(expected2, CIDRUtils.toCIDR(IPv4RangeData.fromString(
                         "192.168.0.17\t192.168.0.19\t")));
 
-        ArrayList<CIDR> expected3 = new ArrayList();
+        ArrayList<CIDR> expected3 = new ArrayList<>();
         expected3.add(CIDR.fromString("192.168.1.17/32"));
         expected3.add(CIDR.fromString("192.168.1.18/31"));
         expected3.add(CIDR.fromString("192.168.1.20/30"));

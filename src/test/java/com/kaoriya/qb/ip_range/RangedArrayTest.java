@@ -10,12 +10,12 @@ public class RangedArrayTest
     @Test
     public void find()
     {
-        RangedItem o0 = new RangedItem(0, 9);
-        RangedItem o1 = new RangedItem(10, 19);
-        RangedItem o2 = new RangedItem(20, 29);
-        RangedItem o3 = new RangedItem(31, 39);
-        RangedItem o5 = new RangedItem(50, 59);
-        RangedArray array = new RangedArray(o0, o1, o2, o3, o5);
+        RangedItem<Object> o0 = new RangedItem<>(0, 9);
+        RangedItem<Object> o1 = new RangedItem<>(10, 19);
+        RangedItem<Object> o2 = new RangedItem<>(20, 29);
+        RangedItem<Object> o3 = new RangedItem<>(31, 39);
+        RangedItem<Object> o5 = new RangedItem<>(50, 59);
+        RangedArray<Object> array = new RangedArray<>(o0, o1, o2, o3, o5);
 
         Assert.assertEquals(o0, array.find(5));
         Assert.assertEquals(o1, array.find(15));
@@ -45,19 +45,19 @@ public class RangedArrayTest
     @Test
     public void fromList()
     {
-        ArrayList<RangedItem> list = new ArrayList();
-        RangedItem o0 = new RangedItem(0, 9);
-        RangedItem o1 = new RangedItem(10, 19);
-        RangedItem o2 = new RangedItem(20, 29);
-        RangedItem o3 = new RangedItem(31, 39);
-        RangedItem o5 = new RangedItem(50, 59);
+        ArrayList<RangedItem<Object>> list = new ArrayList<>();
+        RangedItem<Object> o0 = new RangedItem<>(0, 9);
+        RangedItem<Object> o1 = new RangedItem<>(10, 19);
+        RangedItem<Object> o2 = new RangedItem<>(20, 29);
+        RangedItem<Object> o3 = new RangedItem<>(31, 39);
+        RangedItem<Object> o5 = new RangedItem<>(50, 59);
         list.add(o0);
         list.add(o1);
         list.add(o2);
         list.add(o3);
         list.add(o5);
 
-        RangedArray array = new RangedArray(list);
+        RangedArray<Object> array = new RangedArray<>(list);
         Assert.assertEquals(o0, array.find(5));
         Assert.assertEquals(o1, array.find(15));
         Assert.assertEquals(o2, array.find(25));

@@ -40,7 +40,7 @@ public class App
 
     public static void func1() throws IOException
     {
-        Trie<Integer,TrieData> trie = new PatriciaTrie(
+        Trie<Integer,TrieData> trie = new PatriciaTrie<>(
                 IntegerKeyAnalyzer.INSTANCE);
 
         DataReader reader = new DataReader(System.in);
@@ -77,7 +77,7 @@ public class App
 
     public static void func1a() throws IOException
     {
-        Trie<Integer,TrieData> trie = new PatriciaTrie(
+        Trie<Integer,TrieData> trie = new PatriciaTrie<>(
                 IntegerKeyAnalyzer.INSTANCE);
 
         DataReader reader = new DataReader(System.in);
@@ -124,7 +124,7 @@ public class App
 
     public static void func2() throws IOException
     {
-        IntRangeTable<String> table = new IntRangeTable();
+        IntRangeTable<String> table = new IntRangeTable<>();
 
         DataReader reader = new DataReader(System.in);
         try {
@@ -190,9 +190,8 @@ public class App
 
     public static void func3() throws IOException
     {
-        IntRangeTable<String> table = new IntRangeTable();
-        Trie<Integer,TrieData> trie = new PatriciaTrie(
-                IntegerKeyAnalyzer.INSTANCE);
+        IntRangeTable<String> table = new IntRangeTable<>();
+        Trie<Integer,TrieData> trie = new PatriciaTrie<>(IntegerKeyAnalyzer.INSTANCE);
 
         DataReader reader = new DataReader(System.in);
         try {

@@ -5,13 +5,11 @@ import java.util.Random;
 
 public final class IntRangeTable<T>
 {
-    final ArrayList<IntRangeData<T>> arrayList = new ArrayList();
+    final ArrayList<IntRangeData<T>> arrayList = new ArrayList<>();
 
-    private final ArrayList<IntRangeData<T>> negativeList
-        = new ArrayList();
+    private final ArrayList<IntRangeData<T>> negativeList = new ArrayList<>();
 
-    private final ArrayList<IntRangeData<T>> positiveList
-        = new ArrayList();
+    private final ArrayList<IntRangeData<T>> positiveList = new ArrayList<>();
 
     public IntRangeTable() {
     }
@@ -131,10 +129,10 @@ public final class IntRangeTable<T>
     {
         while (((long)end - (long)start + 1L) >= 0x80000000L) {
             int mid = start + 0x7FFFFFFF;
-            list.add(new IntRangeData(start, mid - 1, null));
+            list.add(new IntRangeData<T>(start, mid - 1, null));
             start = mid;
         }
-        list.add(new IntRangeData(start, end, null));
+        list.add(new IntRangeData<T>(start, end, null));
     }
 
 }

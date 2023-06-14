@@ -12,7 +12,9 @@ public final class IntRangeArray<T>
     {
         this.length = table.arrayList.size();
         this.rangeArray = new int[this.length * 2];
-        this.valueArray = (T[])Array.newInstance(elementType, this.length);
+        @SuppressWarnings("unchecked")
+        T[] tmp = (T[])Array.newInstance(elementType, this.length);
+        this.valueArray = tmp;
         // initialize array.
         for (int i = 0; i < this.length; ++i) {
             IntRangeData<T> d = table.arrayList.get(i);

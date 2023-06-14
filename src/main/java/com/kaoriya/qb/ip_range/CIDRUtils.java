@@ -10,7 +10,7 @@ public final class CIDRUtils {
     }
 
     public static List<CIDR> toCIDR(IPv4RangeData data) {
-        ArrayList<CIDR> list = new ArrayList();
+        ArrayList<CIDR> list = new ArrayList<>();
         int min = data.getStart().intValue();
         int max = data.getEnd().intValue();
 

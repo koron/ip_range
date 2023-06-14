@@ -8,6 +8,7 @@ public class RangedArray<T>
 {
     private final RangedItem<T>[] array;
 
+    @SafeVarargs
     public RangedArray(RangedItem<T>... items)
     {
         this.array = Arrays.copyOf(items, items.length);
@@ -16,7 +17,9 @@ public class RangedArray<T>
 
     public RangedArray(List<RangedItem<T>> list)
     {
-        this.array = list.toArray(new RangedItem[list.size()]);
+        @SuppressWarnings("unchecked")
+        RangedItem<T>[] tmp = list.toArray(new RangedItem[list.size()]);
+        this.array = tmp;
         sortByRange(this.array);
     }
 

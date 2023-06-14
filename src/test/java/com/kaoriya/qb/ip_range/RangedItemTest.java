@@ -9,7 +9,7 @@ public class RangedItemTest
     @Test
     public void value()
     {
-        RangedItem item = new RangedItem(10, 12);
+        RangedItem<Object> item = new RangedItem<>(10, 12);
         Assert.assertNull(item.getValue());
 
         Object v1 = new Object();
@@ -20,7 +20,7 @@ public class RangedItemTest
     @Test
     public void compare()
     {
-        RangedItem item = new RangedItem(100, 102);
+        RangedItem<Object> item = new RangedItem<>(100, 102);
         Assert.assertEquals(-1, item.compare(0));
         Assert.assertEquals(-1, item.compare(98));
         Assert.assertEquals(-1, item.compare(99));
@@ -35,7 +35,7 @@ public class RangedItemTest
     @Test
     public void compare_2()
     {
-        RangedItem item = new RangedItem(100, 100);
+        RangedItem<Object> item = new RangedItem<>(100, 100);
         Assert.assertEquals(-1, item.compare(99));
         Assert.assertEquals(0, item.compare(100));
         Assert.assertEquals(1, item.compare(101));
@@ -44,12 +44,12 @@ public class RangedItemTest
     @Test
     public void compareTo()
     {
-        RangedItem o0 = new RangedItem(10, 19);
-        RangedItem o1 = new RangedItem(10, 19);
-        RangedItem o2 = new RangedItem(20, 29);
-        RangedItem o3 = new RangedItem(10, 29);
-        RangedItem o4 = new RangedItem(5, 15);
-        RangedItem o5 = new RangedItem(15, 25);
+        RangedItem<Object> o0 = new RangedItem<>(10, 19);
+        RangedItem<Object> o1 = new RangedItem<>(10, 19);
+        RangedItem<Object> o2 = new RangedItem<>(20, 29);
+        RangedItem<Object> o3 = new RangedItem<>(10, 29);
+        RangedItem<Object> o4 = new RangedItem<>(5, 15);
+        RangedItem<Object> o5 = new RangedItem<>(15, 25);
 
         Assert.assertEquals( 0, o0.compareTo(o1));
         Assert.assertEquals(-1, o0.compareTo(o2));
